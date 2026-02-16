@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: excellent_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: excellent_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./excellent-back
+      dockerfile: Dockerfile
+    container_name: excellent_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    env_file:
+      - ./excellent-back/.env
+    volumes:
+      - ./excellent-back:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./excellent-front
+      dockerfile: Dockerfile
+    container_name: excellent_frontend
+    restart: always
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    volumes:
+      - ./excellent-front:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
