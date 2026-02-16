@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CreateClientDto } from './dto/create-client.dto';
+import { GetAllClientDto } from './dto/get-all-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { CreateClientService } from './services/create-client.service';
 import { DeleteClientService } from './services/delete-client.service';
@@ -34,8 +35,8 @@ export class ClientsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RolesEnum.ADMIN)
   @Get()
-  findAll() {
-    return this.getAllClientService.run();
+  getAll(@Query() query: GetAllClientDto) {
+    return this.getAllClientService.run(query);
   }
 
   @ApiBearerAuth('access-token')

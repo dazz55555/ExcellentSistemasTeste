@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { CnpjGateway } from "src/CNPJws/gateways/cnpj.gateway";
 import { ClientRepository } from "../client.repository";
 import { UpdateClientDto } from "../dto/update-client.dto";
 import { Client } from "../entities/client.entity";
@@ -6,6 +7,7 @@ import { Client } from "../entities/client.entity";
 @Injectable()
 export class UpdateClientService {
     constructor(
+        private readonly cnpjProvider: CnpjGateway,
         private readonly clientRepository: ClientRepository
     ) { }
 
@@ -16,20 +18,19 @@ export class UpdateClientService {
         const clientExists = await this.clientRepository.findById(id);
         if (!clientExists) throw new BadRequestException('Client not found');
 
-        if (updateClientDto.cnpj) {
-            const clientCnpjExists = await this.clientRepository.findByCnpj(updateClientDto.cnpj);
-            if (clientCnpjExists) throw new BadRequestException('Client already exists');
-        }
-        if (updateClientDto.email) {
-            const clientEmailExists = await this.clientRepository.findByEmail(updateClientDto.email);
-            if (clientEmailExists) throw new BadRequestException('Client already exists');
-        }
+        const clientCnpjExists = await this.clientRepository.findByCnpj(updateClientDto.cnpj);
+        if (clientCnpjExists) throw new BadRequestException('Client already exists');
+
 
         const client = new Client();
         client.id = id;
-        if (updateClientDto.social_reason) client.social_reason = updateClientDto.social_reason;
-        if (updateClientDto.cnpj) client.cnpj = updateClientDto.cnpj;
-        if (updateClientDto.email) client.email = updateClientDto.email;
+        client.cnpj = updateClientDto.cnpj;
+
+        const clientFromCnpj = await this.cnpjProvider.getCnpjData(updateClientDto.cnpj);
+        if (!clientFromCnpj) throw new BadRequestException('CNPJ not found in database');
+
+        client.social_reason = clientFromCnpj.razao_social;
+        client.email = clientFromCnpj.estabelecimento.email;
 
         await this.clientRepository.update(client);
 

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { GetAllClientDto } from "./dto/get-all-client.dto";
 import { Client } from "./entities/client.entity";
 
 @Injectable()
@@ -29,12 +30,16 @@ export class ClientRepository {
     async findByEmailOrCnpj(email: string, cnpj: string) {
         return await this.client.findOne({ where: { email, cnpj } });
     }
-    async findAll() {
-        return await this.client.find();
-    }
+    async findAll(filters: GetAllClientDto) {
+        const [data, total] = await this.client.findAndCount({
+            skip: (filters.page - 1) * filters.limit,
+            take: filters.limit,
+        });
 
-    async countAll() {
-        return await this.client.count();
+        return {
+            items: data,
+            total,
+        };
     }
 
     async update(client: Client) {

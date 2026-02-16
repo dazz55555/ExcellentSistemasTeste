@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CnpjWsGateway } from 'src/CNPJws/gateways/cnpj-ws.gateway';
+import { CnpjGateway } from 'src/CNPJws/gateways/cnpj.gateway';
 import { ClientRepository } from './client.repository';
 import { ClientsController } from './clients.controller';
 import { Client } from './entities/client.entity';
@@ -20,6 +22,10 @@ import { UpdateClientService } from './services/update-client.service';
     GetOneClientService,
     UpdateClientService,
     DeleteClientService,
+    {
+      provide: CnpjGateway,
+      useClass: CnpjWsGateway,
+    },
   ],
   exports: [
 
