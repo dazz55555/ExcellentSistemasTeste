@@ -25,9 +25,7 @@ export class CreateProductService {
             await manager.save(product);
 
             const uploadPath = path.resolve(
-                __dirname,
-                '..',
-                '..',
+                process.cwd(),
                 'uploads',
                 'products',
                 String(product.id),
