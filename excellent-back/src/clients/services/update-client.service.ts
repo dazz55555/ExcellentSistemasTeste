@@ -32,9 +32,6 @@ export class UpdateClientService {
         client.social_reason = clientFromCnpj.razao_social;
         client.email = clientFromCnpj.estabelecimento.email;
 
-        await this.clientRepository.update(client);
-
-        const clientUpdated = await this.clientRepository.findById(id);
-        return clientUpdated;
+        return await this.clientRepository.update(client);
     }
 }

@@ -42,8 +42,9 @@ export class ClientRepository {
         };
     }
 
-    async update(client: Client) {
-        return await this.client.update(client.id, client);
+    async update(client: Client): Promise<Client | null> {
+        await this.client.update(client.id, client);
+        return await this.client.findOne({ where: { id: client.id } });
     }
 
     async delete(id: number) {
