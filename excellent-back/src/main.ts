@@ -17,6 +17,11 @@ async function bootstrap() {
         }),
     );
     app.useGlobalFilters(new HttpExceptionFilter());
+    app.enableCors({
+        origin: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        credentials: true,
+    });
 
     const config = new DocumentBuilder()
         .setTitle('API Teste Excellent Sistemas')

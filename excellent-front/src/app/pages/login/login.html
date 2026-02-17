@@ -1,0 +1,68 @@
+<div class="login-container">
+
+    <mat-card class="login-card">
+
+        <h2 class="form-container">Login</h2>
+
+        <form (ngSubmit)="onSubmit()">
+
+            <mat-form-field appearance="outline" class="form-container">
+                <mat-label>Email</mat-label>
+                <input matInput [(ngModel)]="email" name="email" required>
+                <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-container">
+                <mat-label>Senha</mat-label>
+                <input matInput type="password" [(ngModel)]="password" name="password" required>
+                <mat-icon matSuffix>lock</mat-icon>
+            </mat-form-field>
+
+
+            <button mat-raised-button color="primary" class="login-button" [disabled]="loading">
+                Entrar
+            </button>
+
+            <mat-progress-spinner *ngIf="loading" diameter="30" mode="indeterminate">
+            </mat-progress-spinner>
+
+        </form>
+
+        <div *ngIf="errorMessage" class="error">
+            {{ errorMessage }}
+        </div>
+
+    </mat-card>
+
+</div>
+
+<style>
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-card {
+        width: 50%;
+        margin: auto;
+        margin: 20px;
+        padding-bottom: 2%;
+    }
+
+    .login-button {
+        display: block;
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        margin: 20px;
+    }
+</style>
