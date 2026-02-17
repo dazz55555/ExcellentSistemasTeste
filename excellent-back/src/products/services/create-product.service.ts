@@ -1,25 +1,28 @@
 import { Injectable } from "@nestjs/common";
+import { randomUUID } from "crypto";
 import * as fs from 'fs';
 import path from "path";
+import { DataSource } from "typeorm";
 import { CreateProductDto } from "../dto/create-product.dto";
+import { ProductImage } from "../entities/product-images.entity";
 import { Product } from "../entities/product.entity";
-import { ProductRepository } from "../products.repository";
 
 @Injectable()
 export class CreateProductService {
     constructor(
-        private readonly productRepository: ProductRepository,
+        private readonly dataSource: DataSource,
     ) { }
 
     async run(createProductDto: CreateProductDto, files: Express.Multer.File[]) {
-        try {
-            const product = new Product();
+        return await this.dataSource.transaction(async (manager) => {
 
-            product.description = createProductDto.description;
-            product.price = createProductDto.price;
-            product.stock = createProductDto.stock;
+            const product = manager.create(Product, {
+                description: createProductDto.description,
+                price: createProductDto.price,
+                stock: createProductDto.stock,
+            });
 
-            await this.productRepository.save(product);
+            await manager.save(product);
 
             const uploadPath = path.resolve(
                 __dirname,
@@ -34,20 +37,25 @@ export class CreateProductService {
                 fs.mkdirSync(uploadPath, { recursive: true });
             }
 
-            const imagePaths: string[] = [];
+            const productImages: ProductImage[] = [];
 
-            for (const file of files) {
-                console.log('size:', file.size);
-                console.log('buffer exists:', !!file.buffer);
-                const filePath = path.join(uploadPath, file.originalname);
+            for (const file of files ?? []) {
+                const fileName = `${randomUUID()}-${file.originalname}`;
+                const filePath = path.join(uploadPath, fileName);
 
                 fs.writeFileSync(filePath, file.buffer);
+
+                const image = manager.create(ProductImage, {
+                    url: `/uploads/products/${product.id}/${fileName}`,
+                    product: product,
+                });
+
+                productImages.push(image);
             }
 
+            await manager.save(productImages);
+
             return product;
-        } catch (error) {
-            console.log("AAA")
-            throw error
-        }
+        });
     }
 }
