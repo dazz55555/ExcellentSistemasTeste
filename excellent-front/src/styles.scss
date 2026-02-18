@@ -2,3 +2,13 @@ body {
     background: linear-gradient(135deg, #0d6efd, #6610f2);
     font-family: 'Segoe UI', sans-serif;
 }
+
+.snackbar-error {
+    background: #d32f2f;
+    color: #fff;
+}
+
+.snackbar-success {
+    background: #2e7d32;
+    color: #fff;
+}

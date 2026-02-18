@@ -1,0 +1,22 @@
+<div class="container">
+    <h2>Cadastrar Cliente</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div>
+            <label>CNPJ</label>
+            <input type="text" formControlName="cnpj" />
+        </div>
+
+        <br>
+
+        <button type="submit" [disabled]="form.invalid">
+            Salvar
+        </button>
+
+        <button type="button" routerLink="/clients">
+            Cancelar
+        </button>
+
+    </form>
+</div>

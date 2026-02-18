@@ -6,14 +6,14 @@
         <h3 class="logo">Excellent Sistem</h3>
 
         <mat-nav-list>
-            <a mat-list-item routerLink="/clients" class="left-content">
-                <mat-icon style="padding-right: 10px;">group</mat-icon>
-                <span>Clientes</span>
-            </a>
-
             <a mat-list-item routerLink="/products" class="left-content">
                 <mat-icon style="padding-right: 10px;">inventory</mat-icon>
                 <span>Produtos</span>
+            </a>
+
+            <a *ngIf="isAdmin" mat-list-item routerLink="/clients" class="left-content">
+                <mat-icon style="padding-right: 10px;">group</mat-icon>
+                <span>Clientes</span>
             </a>
 
             <a mat-list-item routerLink="/orders" class="left-content">

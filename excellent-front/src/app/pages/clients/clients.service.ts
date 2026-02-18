@@ -20,4 +20,13 @@ export class ClientsService {
 
         return this.http.get<PaginatedResponse<Client>>(this.apiUrl, { params });
     }
+
+    createClient(data: any) {
+        return this.http.post(this.apiUrl, data);
+    }
+
+    deleteClient(id: number) {
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
+
 }

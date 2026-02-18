@@ -20,4 +20,16 @@ export class OrdersService {
 
         return this.http.get<PaginatedResponse<Order>>(this.apiUrl, { params });
     }
+
+    getOrderById(id: number): Observable<Order> {
+        return this.http.get<Order>(`${this.apiUrl}/${id}`);
+    }
+
+    createOrder(data: any): Observable<Order> {
+        return this.http.post<Order>(this.apiUrl, data);
+    }
+
+    deleteOrder(id: number) {
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 }

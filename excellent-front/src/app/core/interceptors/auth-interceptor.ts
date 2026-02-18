@@ -20,7 +20,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authReq).pipe(
       catchError(error => {
 
-        console.log("NAO DEU TOKEN INVALIDO")
         if (error.status === 401) {
           localStorage.removeItem('access_token');
           router.navigate(['/login']);

@@ -1,0 +1,48 @@
+<h2>Criar Pedido</h2>
+
+<mat-card>
+    <form [formGroup]="orderForm" (ngSubmit)="submitOrder()">
+
+        <mat-form-field appearance="fill" style="width:100%">
+            <mat-label>Cliente</mat-label>
+            <mat-select formControlName="clientId" required>
+                <mat-option *ngFor="let client of clients" [value]="client.id">{{ client.social_reason }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div formArrayName="items">
+            <div *ngFor="let item of items.controls; let i=index" [formGroupName]="i" class="item-card">
+                <mat-card style="margin-bottom:10px; padding:10px;">
+                    <mat-form-field appearance="fill" style="width:70%">
+                        <mat-label>Produto</mat-label>
+                        <mat-select formControlName="productId" required>
+                            <mat-option *ngFor="let product of products" [value]="product.id">{{ product.description
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" style="width:20%; margin-left:10px;">
+                        <mat-label>Quantidade</mat-label>
+                        <input matInput type="number" formControlName="quantity" min="1" />
+                    </mat-form-field>
+
+                    <button mat-icon-button color="warn" type="button" (click)="removeItem(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-card>
+            </div>
+        </div>
+
+        <button mat-raised-button color="primary" type="button" (click)="addItem()">
+            Adicionar Produto
+        </button>
+
+        <br /><br />
+        <button mat-raised-button color="accent" type="submit" [disabled]="orderForm.invalid">
+            Criar Pedido
+        </button>
+
+    </form>
+</mat-card>
+
+<pre *ngIf="response">{{ response | json }}</pre>

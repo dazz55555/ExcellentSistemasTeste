@@ -46,7 +46,7 @@ export class Login {
         next: (res) => {
           this.loading = false;
           localStorage.setItem('access-token', res.access_token);
-          this.router.navigate(['/clients']);
+          this.router.navigate(['/products']);
         },
         error: (err) => {
           console.log(err);

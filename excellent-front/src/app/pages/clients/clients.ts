@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { Client } from './clients.model';
 import { ClientsService } from './clients.service';
 
@@ -25,6 +27,7 @@ import { ClientsService } from './clients.service';
 })
 export class Clients implements OnInit {
 
+  router = inject(Router);
   displayedColumns: string[] = ['id', 'social_reason', 'cnpj', 'email', 'actions'];
 
   clients: Client[] = [];
@@ -48,7 +51,7 @@ export class Clients implements OnInit {
   }
 
   createClient() {
-    console.log('Criar novo cliente');
+    this.router.navigate(['/clients/create']);
   }
 
   viewClient(client: any) {
@@ -59,9 +62,40 @@ export class Clients implements OnInit {
     console.log('Editar', client);
   }
 
-  deleteClient(client: any) {
-    console.log('Excluir', client);
+  deleteClient(client: Client) {
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: `Você realmente quer deletar o cliente "${client.social_reason}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, deletar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.clientsService.deleteClient(client.id).subscribe({
+          next: () => {
+            Swal.fire(
+              'Deletado!',
+              'O cliente foi deletado com sucesso.',
+              'success'
+            );
+            this.loadClients();
+          },
+          error: (err) => {
+            Swal.fire(
+              'Erro!',
+              'Não foi possível deletar o cliente.',
+              'error'
+            );
+            console.error(err);
+          }
+        });
+      }
+    });
   }
+
 
 
   onPageChange(event: any) {

@@ -20,4 +20,16 @@ export class ProductsService {
 
         return this.http.get<PaginatedResponse<Product>>(this.apiUrl, { params });
     }
+
+    getProductById(id: number): Observable<Product> {
+        return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    }
+
+    createProduct(formData: FormData): Observable<any> {
+        return this.http.post(this.apiUrl, formData);
+    }
+
+    deleteProduct(id: number) {
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 }
