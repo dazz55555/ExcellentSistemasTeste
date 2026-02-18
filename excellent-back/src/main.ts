@@ -36,7 +36,7 @@ async function bootstrap() {
                 description: 'Insira o token JWT',
                 in: 'header',
             },
-            'access-token', // nome da chave
+            'access-token',
         )
         .build();
 
